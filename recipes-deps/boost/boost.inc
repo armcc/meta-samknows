@@ -46,9 +46,10 @@ PACKAGECONFIG[mpi] = ",,mpich"
 PACKAGECONFIG[python] = ",,python3"
 
 BOOST_LIBS += "\
-    ${@bb.utils.filter('PACKAGECONFIG', 'locale python', d)} \
+    ${@bb.utils.contains('PACKAGECONFIG', 'locale', 'locale', '', d)} \
+    ${@bb.utils.contains('PACKAGECONFIG', 'python', 'python', '', d)} \
     ${@bb.utils.contains('PACKAGECONFIG', 'graph_parallel', 'graph_parallel mpi', \
-                         bb.utils.filter('PACKAGECONFIG', 'mpi', d), d)} \
+                         bb.utils.contains('PACKAGECONFIG', 'mpi', 'mpi', '', d), d)} \
 "
 
 inherit python3-dir
