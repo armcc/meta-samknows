@@ -1,0 +1,3 @@
+
+PACKAGECONFIG_remove = "locale"
+
