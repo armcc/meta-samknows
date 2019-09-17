@@ -39,20 +39,18 @@ BOOST_LIBS_remove_class-native = " context coroutine"
 BOOST_LIBS_remove_mips16e = "wave"
 
 # optional libraries
-PACKAGECONFIG ??= "locale python"
+PACKAGECONFIG ??= "locale"
 PACKAGECONFIG[locale] = ",,icu"
 PACKAGECONFIG[graph_parallel] = ",,,boost-mpi mpich"
 PACKAGECONFIG[mpi] = ",,mpich"
-PACKAGECONFIG[python] = ",,python3"
 
 BOOST_LIBS += "\
     ${@bb.utils.contains('PACKAGECONFIG', 'locale', 'locale', '', d)} \
-    ${@bb.utils.contains('PACKAGECONFIG', 'python', 'python', '', d)} \
     ${@bb.utils.contains('PACKAGECONFIG', 'graph_parallel', 'graph_parallel mpi', \
                          bb.utils.contains('PACKAGECONFIG', 'mpi', 'mpi', '', d), d)} \
 "
 
-inherit python3-dir
+inherit python-dir
 PYTHON_ROOT = "${STAGING_DIR_HOST}/${prefix}"
 
 # Make a package for each library, plus -dev
@@ -159,11 +157,6 @@ do_configure() {
 	# D2194:Fixing the failure of "error: duplicate initialization of gcc with the following parameters" during compilation.
 	rm -f ${WORKDIR}/user-config.jam
 	echo 'using gcc : 4.3.1 : ${CXX} : <cflags>"${CFLAGS}" <cxxflags>"${CXXFLAGS}" <linkflags>"${LDFLAGS}" ;' >> ${WORKDIR}/user-config.jam
-
-	# If we want Python then we need to tell Boost *exactly* where to find it
-	if ${@bb.utils.contains('BOOST_LIBS', 'python', 'true', 'false', d)}; then
-		echo "using python : ${PYTHON_BASEVERSION} : ${STAGING_DIR_HOST}${bindir}/python3 : ${STAGING_DIR_HOST}${includedir}/${PYTHON_DIR}${PYTHON_ABI} : ${STAGING_DIR_HOST}${libdir}/${PYTHON_DIR} ;" >> ${WORKDIR}/user-config.jam
-	fi
 
 	if ${@bb.utils.contains('BOOST_LIBS', 'mpi', 'true', 'false', d)}; then
 		echo "using mpi : : <find-shared-library>mpi ;" >> ${WORKDIR}/user-config.jam
