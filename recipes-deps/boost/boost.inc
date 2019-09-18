@@ -50,9 +50,6 @@ BOOST_LIBS += "\
                          bb.utils.contains('PACKAGECONFIG', 'mpi', 'mpi', '', d), d)} \
 "
 
-inherit python-dir
-PYTHON_ROOT = "${STAGING_DIR_HOST}/${prefix}"
-
 # Make a package for each library, plus -dev
 PACKAGES = "${PN}-dbg ${BOOST_PACKAGES}"
 python __anonymous () {
@@ -129,7 +126,6 @@ BJAM_TOOLS   = "--ignore-site-config \
 		'-sGCC_INCLUDE_DIRECTORY=${STAGING_INCDIR}' \
 		'-sGCC_STDLIB_DIRECTORY=${STAGING_LIBDIR}' \
 		'-sBUILD=release <optimization>space <threading>multi <inlining>on <debug-symbols>off' \
-		'-sPYTHON_ROOT=${PYTHON_ROOT}' \
 		'--layout=system' \
 		"
 
